@@ -21,6 +21,12 @@ class User(db.Model):
     def get(cls, card_id):
         return cls.query.filter(cls.card_id == card_id).first()
 
+    def set_chance_modifier(self, config):
+        self.chance_modifier = max(
+            self.chance_modifier - config.get('USER_CHANCE_MODIFIER'),
+            config.get('MIN_USER_CHANCE'))
+        db.session.commit()
+
 
 class Log(db.Model):
     __tablename__ = "log"
@@ -30,6 +36,12 @@ class Log(db.Model):
     win = db.Column(db.Boolean())
     prize_id = db.Column(db.Integer, db.ForeignKey("prize.id"), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    @classmethod
+    def add(cls, user_id, win, prize_id=None):
+        log = cls(user_id=user_id, win=win, prize_id=prize_id)
+        db.session.add(log)
+        db.session.commit()
 
     @classmethod
     def already_played(cls, user_id):
@@ -42,12 +54,26 @@ class Log(db.Model):
 
     @classmethod
     def today_winned_count(cls):
+        return cls.today_winned().count()
+
+    @classmethod
+    def today_winned(cls):
         return cls.query \
             .filter(cls.win.is_(True)) \
             .filter(cls.created_at >= datetime.datetime.now().replace(
                 hour=0, minute=0,
-                second=0, microsecond=0)) \
-            .count()
+                second=0, microsecond=0))
+
+    @classmethod
+    def get_last_winners(cls):
+        return cls.query \
+            .join(User, cls.user_id == User.id) \
+            .join(Prize, cls.prize_id == Prize.id) \
+            .with_entities(User.name, User.nickname, Prize.name) \
+            .filter(cls.win.is_(True)) \
+            .order_by(cls.created_at.desc()) \
+            .limit(3) \
+            .all()
 
 
 class Prize(db.Model):
@@ -60,6 +86,12 @@ class Prize(db.Model):
 
     @classmethod
     def get_random(cls):
+        today_prizes = [l.prize_id for l in Log.today_winned().all()]
         return cls.query \
+            .filter(cls.id.notin_(today_prizes)) \
             .order_by(func.random()) \
             .first()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()

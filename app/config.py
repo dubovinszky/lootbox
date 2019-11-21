@@ -13,7 +13,7 @@ class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY', 'my_strong_key')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PRIZES_PER_DAY = 5
-    WIN_LIMIT = 0.4
+    WIN_LIMIT = 0.9
     DAILY_MODIFIER = 0.05
     MIN_USER_CHANCE = 0.5
     USER_CHANCE_MODIFIER = 0.1
