@@ -9,7 +9,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), unique=False, nullable=False)
-    nickname = db.Column(db.String(255), unique=True, nullable=True)
+    nickname = db.Column(db.String(255), unique=False, nullable=True)
     maconomy_id = db.Column(db.Integer, unique=True, nullable=False)
     card_id = db.Column(db.Integer, unique=True, nullable=False)
     avatar = db.Column(db.String(255), unique=True, nullable=True)
