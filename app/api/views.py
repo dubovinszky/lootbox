@@ -37,6 +37,7 @@ def spin(user, card_id):
     user.set_last_spin()
     today_winned_count = Log.today_winned_count()
     if today_winned_count >= app.config.get('PRIZES_PER_DAY'):
+        Log.add(user_id=user.id, win=False)
         return msg(False, msg="no more prizes")
 
     if win(app.config, user.chance_modifier, today_winned_count):

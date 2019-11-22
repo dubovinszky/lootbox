@@ -15,7 +15,8 @@ def win(config, chance_modifier, today_winned):
 
 
 def _get_daily_modifier(config, today_winned):
-    return 1 - today_winned * config.get('DAILY_MODIFIER')
+    return max(1 - today_winned * config.get('DAILY_MODIFIER'),
+               config.get('MIN_DAILY_MODIFIER'))
 
 
 def _make_response(json):
