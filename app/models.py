@@ -52,8 +52,7 @@ class Log(db.Model):
         return cls.query \
             .filter(cls.user_id == user_id) \
             .filter(cls.created_at >= datetime.datetime.utcnow().replace(
-                hour=0, minute=0,
-                second=0, microsecond=0)) \
+                hour=0, minute=0, second=0, microsecond=0)) \
             .count() > 0
 
     @classmethod
@@ -65,8 +64,7 @@ class Log(db.Model):
         return cls.query \
             .filter(cls.win.is_(True)) \
             .filter(cls.created_at >= datetime.datetime.utcnow().replace(
-                hour=0, minute=0,
-                second=0, microsecond=0))
+                hour=0, minute=0, second=0, microsecond=0))
 
     @classmethod
     def get_last_winners(cls):

@@ -3,11 +3,13 @@ from flask import Blueprint
 from app import app
 from app.models import Log
 from app.models import Prize
+
 from app.utils import win
-from app.utils import get_daily_modifier
 from app.utils import msg
+
 from app.formatters import format_last_winners
 from app.formatters import format_prizes
+
 from app.decorators import user_check
 from app.decorators import presentation_mode_spin
 from app.decorators import presentation_mode_get_user
@@ -29,19 +31,15 @@ def get_user(user, card_id):
 @user_check()
 @presentation_mode_spin()
 def spin(user, card_id):
-    already_played = Log.already_played(user.id)
-    if already_played:
-        return msg(False, msg="already played",
-                   already_played=already_played)
+    if Log.already_played(user.id):
+        return msg(False, msg="already played", already_played=True)
 
     user.set_last_spin()
-    today_winned = Log.today_winned_count()
-    if today_winned >= app.config.get('PRIZES_PER_DAY'):
+    today_winned_count = Log.today_winned_count()
+    if today_winned_count >= app.config.get('PRIZES_PER_DAY'):
         return msg(False, msg="no more prizes")
 
-    winner = win(app.config, user.chance_modifier,
-                 get_daily_modifier(app.config, today_winned))
-    if winner:
+    if win(app.config, user.chance_modifier, today_winned_count):
         prize = Prize.get_random()
 
         user.set_chance_modifier(app.config)
