@@ -6,4 +6,4 @@ def format_last_winners(last_winners):
 
 
 def format_prizes(prizes):
-    return [{"name": p.name} for p in prizes]
+    return [{"id": p.id, "name": p.name} for p in prizes]
