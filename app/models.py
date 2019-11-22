@@ -27,6 +27,10 @@ class User(db.Model):
             config.get('MIN_USER_CHANCE'))
         db.session.commit()
 
+    def set_last_spin(self):
+        self.last_spin_date = datetime.datetime.utcnow()
+        db.session.commit()
+
 
 class Log(db.Model):
     __tablename__ = "log"
