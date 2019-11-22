@@ -70,7 +70,7 @@ def spin(card_id):
         user.set_chance_modifier(app.config)
         Log.add(user_id=user.id, win=True, prize_id=prize.id)
 
-        return _msg(True, prize=prize.name)
+        return _msg(True, prize=prize.name, prize_id=prize.id)
 
     Log.add(user_id=user.id, win=False)
 
