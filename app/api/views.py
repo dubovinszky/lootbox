@@ -50,7 +50,7 @@ def spin(card_id):
         prize = Prize.get_random()
         Log.add(user_id=user.id, win=True, prize_id=prize.id)
         user.set_last_spin()
-        return _msg(True, prize=prize.name)
+        return _msg(True, prize=prize.name, prize_id=prize.id)
 
     already_played = Log.already_played(user.id)
     if already_played:

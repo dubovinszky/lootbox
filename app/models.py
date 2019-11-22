@@ -91,10 +91,15 @@ class Prize(db.Model):
     @classmethod
     def get_random(cls):
         today_prizes = [l.prize_id for l in Log.today_winned().all()]
-        return cls.query \
+        prize = cls.query \
             .filter(cls.id.notin_(today_prizes)) \
             .order_by(func.random()) \
             .first()
+        if not prize:
+            return cls.query \
+                .order_by(func.random()) \
+                .first()
+        return prize
 
     @classmethod
     def get_all(cls):
