@@ -47,7 +47,7 @@ class Log(db.Model):
     def already_played(cls, user_id):
         return cls.query \
             .filter(cls.user_id == user_id) \
-            .filter(cls.created_at >= datetime.datetime.now().replace(
+            .filter(cls.created_at >= datetime.datetime.utcnow().replace(
                 hour=0, minute=0,
                 second=0, microsecond=0)) \
             .count() > 0
@@ -60,7 +60,7 @@ class Log(db.Model):
     def today_winned(cls):
         return cls.query \
             .filter(cls.win.is_(True)) \
-            .filter(cls.created_at >= datetime.datetime.now().replace(
+            .filter(cls.created_at >= datetime.datetime.utcnow().replace(
                 hour=0, minute=0,
                 second=0, microsecond=0))
 

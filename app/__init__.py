@@ -16,6 +16,6 @@ app.config.from_object(app_settings)
 # Initialize Flask Sql Alchemy
 db = SQLAlchemy(app)
 
-from app.api.views import api
+from app.api.views import api  # noqa
 
 app.register_blueprint(api)

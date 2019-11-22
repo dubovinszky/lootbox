@@ -17,6 +17,8 @@ class BaseConfig:
     DAILY_MODIFIER = 0.05
     MIN_USER_CHANCE = 0.5
     USER_CHANCE_MODIFIER = 0.1
+    PRESENTATION_MODE = True
+    PRESENTATION_ID = 107
 
 
 class DevelopmentConfig(BaseConfig):

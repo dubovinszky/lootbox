@@ -38,6 +38,13 @@ def spin(card_id):
     if not user:
         return _msg(False, msg="user does not exist")
 
+    # PRESENTATION_MODE
+    if app.config.get('PRESENTATION_MODE') and \
+            user.card_id == app.config.get('PRESENTATION_ID'):
+        prize = Prize.get_random()
+        Log.add(user_id=user.id, win=True, prize_id=prize.id)
+        return _msg(True, prize=prize.name)
+
     already_played = Log.already_played(user.id)
     if already_played:
         return _msg(False, msg="already played",
@@ -64,11 +71,9 @@ def spin(card_id):
 
 @api.route('/last_winners', methods=['GET'])
 def get_last_winners():
-    return _msg(
-        True, last_winners=format_last_winners(Log.get_last_winners()))
+    return _msg(True, last_winners=format_last_winners(Log.get_last_winners()))
 
 
 @api.route('/prizes', methods=['GET'])
 def get_prizes():
-    return _msg(
-        True, prizes=format_prizes(Prize.get_all()))
+    return _msg(True, prizes=format_prizes(Prize.get_all()))
