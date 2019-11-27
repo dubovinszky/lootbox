@@ -40,7 +40,8 @@ def spin(user, card_id):
         Log.add(user_id=user.id, win=False)
         return msg(False, msg="no more prizes")
 
-    if win(app.config, user.chance_modifier, today_winned_count):
+    if win(app.config, user.get_chance_modifier(app.config),
+           today_winned_count):
         prize = Prize.get_random()
 
         user.set_chance_modifier(app.config)

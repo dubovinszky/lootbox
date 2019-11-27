@@ -27,6 +27,22 @@ class User(db.Model):
             config.get('MIN_USER_CHANCE'))
         db.session.commit()
 
+    def get_chance_modifier(self, config):
+        def _reset():
+            return ((datetime.datetime.utcnow() - last_win.created_at).days >
+                    config.get('USER_CHANCE_RESET_DAYS'))
+
+        last_win = Log.query \
+            .filter(Log.user_id == self.id) \
+            .filter(Log.win.is_(True)) \
+            .order_by(Log.created_at.desc()) \
+            .first()
+
+        if last_win and _reset():
+            self.chance_modifier = 1.0
+            db.session.commit()
+        return self.chance_modifier
+
     def set_last_spin(self):
         self.last_spin_date = datetime.datetime.utcnow()
         db.session.commit()
@@ -39,6 +55,7 @@ class Log(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     win = db.Column(db.Boolean())
     prize_id = db.Column(db.Integer, db.ForeignKey("prize.id"), nullable=True)
+    handed_over = db.Column(db.Boolean(), server_default='f')
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     @classmethod
