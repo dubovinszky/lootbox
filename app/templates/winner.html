@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %} Nyertes {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Nyertes</h1>
+            <div class="row">
+                <div class="col-sm">
+                    <p><strong>Kártya ID</strong></p>
+                </div>
+                <div class="col-sm">
+                    {{ winner.card_id }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <p><strong>Név</strong></p>
+                </div>
+                <div class="col-sm">
+                    {{ winner.name }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <p><strong>Nyeremény</strong></p>
+                </div>
+                <div class="col-sm">
+                    {{ winner.prize }}
+                </div>
+            </div>
+
+            <div class="row">
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        <label for="handedOver">{{ form.handed_over.label }}</label>
+                        {{ form.handed_over() }}
+                    </div>
+                    <p>{{ form.submit() }}</p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

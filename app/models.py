@@ -55,8 +55,12 @@ class Log(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     win = db.Column(db.Boolean())
     prize_id = db.Column(db.Integer, db.ForeignKey("prize.id"), nullable=True)
-    handed_over = db.Column(db.Boolean(), server_default='f')
+    handed_over = db.Column(db.Boolean(), server_default='f', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    @classmethod
+    def get(cls, log_id):
+        return cls.query.filter(cls.id == log_id).first()
 
     @classmethod
     def add(cls, user_id, win, prize_id=None):
@@ -84,6 +88,27 @@ class Log(db.Model):
                 hour=0, minute=0, second=0, microsecond=0))
 
     @classmethod
+    def winners(cls):
+        return cls.query \
+            .join(User, cls.user_id == User.id) \
+            .join(Prize, cls.prize_id == Prize.id) \
+            .with_entities(Log.id, User.card_id, User.name, Prize.name,
+                           Log.handed_over, Log.created_at) \
+            .filter(cls.win.is_(True)) \
+            .order_by(cls.handed_over, cls.created_at.desc()) \
+            .all()
+
+    @classmethod
+    def winner(cls, log_id):
+        return cls.query \
+            .join(User, cls.user_id == User.id) \
+            .join(Prize, cls.prize_id == Prize.id) \
+            .with_entities(Log.id, User.card_id, User.name, Prize.name,
+                           Log.handed_over, Log.created_at) \
+            .filter(cls.id == log_id) \
+            .first()
+
+    @classmethod
     def get_last_winners(cls):
         return cls.query \
             .join(User, cls.user_id == User.id) \
@@ -94,6 +119,10 @@ class Log(db.Model):
             .limit(3) \
             .all()
 
+    def hand_over(self, handed_over):
+        self.handed_over = handed_over
+        db.session.commit()
+
 
 class Prize(db.Model):
     __tablename__ = "prize"
@@ -101,6 +130,7 @@ class Prize(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     picture_url = db.Column(db.String(255), unique=True, nullable=True)
+    active = db.Column(db.Boolean, server_default='t', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     @classmethod
@@ -108,6 +138,7 @@ class Prize(db.Model):
         today_prizes = [l.prize_id for l in Log.today_winned().all()]
         prize = cls.query \
             .filter(cls.id.notin_(today_prizes)) \
+            .filter(cls.active.is_(True)) \
             .order_by(func.random()) \
             .first()
         if not prize:

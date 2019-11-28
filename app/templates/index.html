@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %} Nyertesek {% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+      <h1>Nyertesek</h1>
+      
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Kártyaszám</th>
+                    <th scope="col">Név</th>
+                    <th scope="col">Nyeremény</th>
+                    <th scope="col">Megkapta</th>
+                    <th scope="col">Dátum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for w in winners %}
+                <tr>
+                    <th scope="row"><a href="/winner/{{ w.id }}">{{ w.id }}</a></th>
+                    <td>{{ w.card_id }}</td>
+                    <td>{{ w.name }}</td>
+                    <td>{{ w.prize }}</td>
+                    <td>
+                        {% if w.handed_over %}
+                            igen
+                        {% else %}
+                            nem
+                        {% endif %}
+                    </td>
+                    <td>{{ w.date.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+          </tbody>
+        </table>
+    </div>
+{% endblock %}

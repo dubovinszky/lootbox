@@ -14,10 +14,10 @@ from app.decorators import user_check
 from app.decorators import presentation_mode_spin
 from app.decorators import presentation_mode_get_user
 
-api = Blueprint('api', __name__)
+api_bp = Blueprint('api', __name__)
 
 
-@api.route('/get_user/<card_id>', methods=['GET'])
+@api_bp.route('/get_user/<card_id>', methods=['GET'])
 @user_check()
 @presentation_mode_get_user()
 def get_user(user, card_id):
@@ -27,7 +27,7 @@ def get_user(user, card_id):
                last_spin=user.last_spin_date)
 
 
-@api.route('/spin/<card_id>', methods=['GET'])
+@api_bp.route('/spin/<card_id>', methods=['GET'])
 @user_check()
 @presentation_mode_spin()
 def spin(user, card_id):
@@ -54,11 +54,11 @@ def spin(user, card_id):
     return msg(False, msg="no win")
 
 
-@api.route('/last_winners', methods=['GET'])
+@api_bp.route('/last_winners', methods=['GET'])
 def get_last_winners():
     return msg(True, last_winners=format_last_winners(Log.get_last_winners()))
 
 
-@api.route('/prizes', methods=['GET'])
+@api_bp.route('/prizes', methods=['GET'])
 def get_prizes():
     return msg(True, prizes=format_prizes(Prize.get_all()))
