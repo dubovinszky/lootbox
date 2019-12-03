@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %} Nyeremény {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Nyeremény</h1>
+            <div class="row">
+                <div class="col-sm">
+                    <p><strong>Név</strong></p>
+                </div>
+                <div class="col-sm">
+                    {{ prize.name }}
+                </div>
+            </div>
+
+            <div class="row">
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.active.label }}
+                        {{ form.active(class="form-control") }}
+                    </div>
+                    <p>{{ form.submit(class="btn btn-primary") }}</p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

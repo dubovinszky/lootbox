@@ -14,7 +14,7 @@ def user_check():
         @wraps(f)
         def decorated_function(*args, **kwargs):
             card_id = kwargs.get('card_id')
-            user = User.get(card_id)
+            user = User.get_by_card_id(card_id)
             if not user:
                 abort(msg(False, msg="user does not exist"))
             return f(user, *args, **kwargs)

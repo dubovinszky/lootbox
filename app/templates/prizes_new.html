@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %} Új nyeremény {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Új nyeremény</h1>
+
+            <div class="row">
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.name.label }}
+                        {{ form.name() }}
+
+                        {% for error in form.name.errors %}
+                            <div class="alert alert-block alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.picture_url.label }}
+                        {{ form.picture_url() }}
+
+                        {% for error in form.picture_url.errors %}
+                            <div class="alert alert-block alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.active.label }}
+                        {{ form.active() }}
+                    </div>
+                    <p>{{ form.submit() }}</p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

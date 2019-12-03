@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %} Nyeremények {% endblock %}
+
+{% block content %}
+    <div class="jumbotron table-responsive">
+      <h1>Nyeremények</h1>
+      
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Név</th>
+                    <th scope="col">Aktív</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in prizes %}
+                <tr>
+                    <th scope="row"><a href="/prize/{{ p.id }}">{{ p.id }}</a></th>
+                    <td>{{ p.name }}</td>
+                    <td>
+                        {% if p.active %}
+                            igen
+                        {% else %}
+                            nem
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+          </tbody>
+        </table>
+        <a class="btn btn-primary" href="/prizes/new" role="button">Új nyeremény</a>
+    </div>
+{% endblock %}

@@ -4,7 +4,13 @@ from app import db
 import datetime
 
 
-class User(db.Model):
+class Base():
+    @classmethod
+    def get(cls, _id):
+        return cls.query.filter(cls.id == _id).first()
+
+
+class User(Base, db.Model):
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -15,11 +21,18 @@ class User(db.Model):
     avatar = db.Column(db.String(255), unique=True, nullable=True)
     chance_modifier = db.Column(db.Float, default=1.0)
     last_spin_date = db.Column(db.DateTime)
+    active = db.Column(db.Boolean, server_default='t', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     @classmethod
-    def get(cls, card_id):
-        return cls.query.filter(cls.card_id == card_id).first()
+    def get_by_card_id(cls, card_id):
+        return cls.query.filter(cls.card_id == card_id) \
+            .filter(cls.active.is_(True)) \
+            .first()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.order_by(cls.card_id).all()
 
     def set_chance_modifier(self, config):
         self.chance_modifier = max(
@@ -47,8 +60,24 @@ class User(db.Model):
         self.last_spin_date = datetime.datetime.utcnow()
         db.session.commit()
 
+    @classmethod
+    def new(cls, card_id, maconomy_id, name, nickname, avatar, active):
+        user = cls(card_id=card_id, maconomy_id=maconomy_id, name=name,
+                   nickname=nickname, avatar=avatar, active=active)
+        db.session.add(user)
+        db.session.commit()
 
-class Log(db.Model):
+    def update(self, card_id, maconomy_id, name, nickname, avatar, active):
+        self.card_id = card_id
+        self.maconomy_id = maconomy_id
+        self.name = name
+        self.nickname = nickname
+        self.avatar = avatar
+        self.active = active
+        db.session.commit()
+
+
+class Log(Base, db.Model):
     __tablename__ = "log"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -57,10 +86,6 @@ class Log(db.Model):
     prize_id = db.Column(db.Integer, db.ForeignKey("prize.id"), nullable=True)
     handed_over = db.Column(db.Boolean(), server_default='f', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-
-    @classmethod
-    def get(cls, log_id):
-        return cls.query.filter(cls.id == log_id).first()
 
     @classmethod
     def add(cls, user_id, win, prize_id=None):
@@ -124,7 +149,7 @@ class Log(db.Model):
         db.session.commit()
 
 
-class Prize(db.Model):
+class Prize(Base, db.Model):
     __tablename__ = "prize"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -132,6 +157,12 @@ class Prize(db.Model):
     picture_url = db.Column(db.String(255), unique=True, nullable=True)
     active = db.Column(db.Boolean, server_default='t', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    @classmethod
+    def add(cls, name, picture_url, active):
+        prize = Prize(name=name, picture_url=picture_url, active=active)
+        db.session.add(prize)
+        db.session.commit()
 
     @classmethod
     def get_random(cls):
@@ -150,3 +181,7 @@ class Prize(db.Model):
     @classmethod
     def get_all(cls):
         return cls.query.all()
+
+    def set_status(self, active):
+        self.active = active
+        db.session.commit()

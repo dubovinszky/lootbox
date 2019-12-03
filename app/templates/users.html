@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %} Játékosok {% endblock %}
+
+{% block content %}
+    <div class="jumbotron table-responsive">
+      <h1>Játékosok</h1>
+      
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Kártya ID</th>
+                    <th scope="col">Maconomy ID</th>
+                    <th scope="col">Név</th>
+                    <th scope="col">Becenév</th>
+                    <th scope="col">Avatar</th>
+                    <th scope="col">Aktív</th>
+                    <th scope="col">Utolsó pörgetés</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <th scope="row"><a href="/user/{{ u.id }}">{{ u.id }}</a></th>
+                    <td>{{ u.card_id }}</td>
+                    <td>{{ u.maconomy_id }}</td>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.nickname }}</td>
+                    <td>
+                        {% if u.avatar %}
+                        <a href="#"  data-toggle="popover" data-img="{{ u.avatar }}" title="{{ u.name }}" >Avatar</a>
+                        {% endif%}
+                    </td>
+                    <td>
+                        {% if u.active %}
+                            igen
+                        {% else %}
+                            nem
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.last_spin_date %}
+                            {{ u.last_spin_date.strftime('%Y-%m-%d %H:%M') }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+          </tbody>
+        </table>
+        <a class="btn btn-primary" href="/users/new" role="button">Új Játékos</a>
+    </div>
+{% endblock %}

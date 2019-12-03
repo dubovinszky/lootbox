@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %} Játékos {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Játékos</h1>
+
+            <div class="row">
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.card_id.label }}
+                        {{ form.card_id(class="form-control") }}
+
+                        {% for error in form.card_id.errors %}
+                            <div class="alert alert-block alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.maconomy_id.label }}
+                        {{ form.maconomy_id(class="form-control") }}
+
+                        {% for error in form.maconomy_id.errors %}
+                            <div class="alert alert-block alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.name.label }}
+                        {{ form.name(class="form-control") }}
+
+                        {% for error in form.name.errors %}
+                            <div class="alert alert-block alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.nickname.label }}
+                        {{ form.nickname(class="form-control") }}
+
+                        {% for error in form.nickname.errors %}
+                            <div class="alert alert-block alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.avatar.label }}
+                        {{ form.avatar(class="form-control") }}
+
+                        {% for error in form.avatar.errors %}
+                            <div class="alert alert-block alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.active.label }}
+                        {{ form.active(class="form-control") }}
+                    </div>
+                    <p>{{ form.submit(class="btn btn-primary") }}</p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
